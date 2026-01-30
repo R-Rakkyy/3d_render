@@ -20,18 +20,67 @@ body, html {
 }
 
 #top-bar {
-    padding: 10px;
-    text-align: center;
-    background-color: #333;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+    background-color: #3a3a3a;
 }
 
-#function-input, #function-presets {
-    width: 40%;
-    padding: 8px;
-    background-color: #444;
-    border: 1px solid #666;
+.function-container {
+    display: flex;
+    flex-grow: 1;
+}
+
+#function-axis-select.tiny-select {
+    padding: 4px;
+    margin-right: 6px;
+    border-radius: 4px;
+    background-color: #555;
     color: white;
+    border: 1px solid #666;
+}
+
+#top-bar #function-axis-select {
+    width: 46px;
+    min-width: 36px;
+    max-width: 60px;
+    padding: 3px 6px;
+    font-size: 0.78em;
+    height: 28px;
+    line-height: 1;
+    flex: none;
     box-sizing: border-box;
+}
+
+#top-bar #function-presets {
+    width: 130px;
+    min-width: 90px;
+    max-width: 180px;
+    padding: 4px 6px;
+    font-size: 0.85em;
+    height: 28px;
+    line-height: 1;
+    flex: none;
+    box-sizing: border-box;
+    margin-left: 6px;
+}
+
+#function-input {
+    flex-grow: 1;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #666;
+    background-color: #555;
+    color: white;
+}
+
+#function-presets {
+    margin-left: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #555;
+    color: white;
+    border: 1px solid #666;
 }
 
 #render-container {
@@ -72,10 +121,13 @@ body, html {
 
 #settings-panel table {
     width: 100%;
+    border-collapse: collapse;
 }
 
 #settings-panel td {
-    padding: 8px 4px;
+    padding: 2px 4px;
+    vertical-align: middle;
+    font-size: 0.9em;
 }
 
 #settings-panel label {
@@ -83,6 +135,7 @@ body, html {
 }
 
 #settings-panel hr {
+    margin: 4px 0;
     border-color: #555;
 }
 
@@ -96,7 +149,11 @@ button, select, input[type="text"], input[type="number"] {
     box-sizing: border-box;
 }
 
-input[type="range"], input[type="checkbox"] {
+input[type="range"] {
+    width: 90%;
+}
+
+input[type="checkbox"] {
     width: auto;
     float: right;
 }
@@ -121,22 +178,78 @@ input[type="range"], input[type="checkbox"] {
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #333;
-    padding: 20px;
+    padding: 14px;
     border: 1px solid #666;
     z-index: 1000;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    box-shadow: 0 6px 30px rgba(0,0,0,0.6);
+    width: min(94vw, 720px);
+    max-height: 80vh;
+    overflow: auto;
+    border-radius: 8px;
 }
 
 #help-modal.hidden {
     display: none;
 }
 
-#help-modal h3 {
-    margin-top: 0;
-    border-bottom: 1px solid #555;
-    padding-bottom: 10px;
+#help-modal .help-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
 }
 
-#help-modal ul {
-    padding-left: 20px;
+#help-modal h3 {
+    margin: 0;
+    padding: 6px 0;
+    font-size: 1.1em;
+    border-bottom: 1px solid #555;
+}
+
+
+#help-modal .help-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 20px;
+    padding-top: 12px;
+}
+
+.help-section h4 {
+    margin: 0 0 6px 0;
+    font-size: 0.95em;
+    color: #ddd;
+}
+
+.help-section dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    column-gap: 12px;
+    row-gap: 8px;
+    align-items: start;
+}
+
+.help-section dl dt {
+    font-weight: bold;
+    color: #fff;
+    text-align: left;
+    margin: 0;
+}
+
+.help-section dl dd {
+    margin: 0;
+    color: #ddd;
+}
+
+@media (max-width: 700px) {
+    #help-modal .help-body {
+        grid-template-columns: 1fr;
+    }
+    .help-section dl {
+        grid-template-columns: 1fr;
+    }
+    .help-section dl dt {
+        text-align: left;
+        margin-bottom: 4px;
+    }
 }

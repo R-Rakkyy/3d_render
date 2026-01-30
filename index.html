@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Render</title>
     <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/toggle.css">
 </head>
 
 
@@ -13,6 +14,11 @@
     <div id="app-container">
         <main id="main-content">
             <div id="top-bar">
+                <select id="function-axis-select" disabled>
+                    <option value="z">f(z)=</option>
+                    <option value="y">f(y)=</option>
+                    <option value="x">f(x)=</option>
+                </select>
                 <input type="text" id="function-input" placeholder="Enter a function, i.e: Math.sin(x / 10) * Math.cos(y / 10) * 20 + t">
                 <select id="function-presets"></select>
             </div>
@@ -24,19 +30,42 @@
         <aside id="settings-panel">
             <h2>Settings</h2>
             <button id="help-button">?</button>
-            <div id="help-modal" class="hidden">
-                <h3>Shortcuts</h3>
-                <ul>
-                    <li><b>F:</b> Next function preset</li>
-                    <li><b>G:</b> Previous function preset</li>
-                    <li><b>T / Enter:</b> Focus function input</li>
-                    <li><b>Tab:</b> Focus & lock canvas</li>
-                    <li><b>Escape:</b> Release focus/cursor</li>
-                    <li><b>ZQSD/WASD:</b> Move camera</li>
-                    <li><b>Arrow Keys:</b> Rotate shape</li>
-                    <li><b>Ctrl + +/-:</b> Adjust Nx/Ny</li>
-                    <li><b>Ctrl + Arrow Keys:</b> Adjust boundaries</li>
-                </ul>
+            <div id="help-modal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="help-title">
+                <h3 id="help-title">Shortcuts</h3>
+                <div class="help-body">
+                    <div class="help-section">
+                        <h4>Presets & Mode</h4>
+                        <dl>
+                            <dt>F</dt><dd>Next function preset</dd>
+                            <dt>G</dt><dd>Previous function preset</dd>
+                            <dt>C</dt><dd>Toggle Complex Mode</dd>
+                            <dt>Y</dt><dd>Cycle render mode</dd>
+                        </dl>
+                    </div>
+                    <div class="help-section">
+                        <h4>Input & Focus</h4>
+                        <dl>
+                            <dt>T / Enter</dt><dd>Focus function input</dd>
+                            <dt>Tab / H</dt><dd>Focus & lock/unlock canvas</dd>
+                            <dt>Escape</dt><dd>Release focus/cursor</dd>
+                        </dl>
+                    </div>
+                    <div class="help-section">
+                        <h4>Navigation</h4>
+                        <dl>
+                            <dt>ZQSD / WASD</dt><dd>Move camera</dd>
+                            <dt>Arrow Keys</dt><dd>Rotate shape</dd>
+                        </dl>
+                    </div>
+                    <div class="help-section">
+                        <h4>Adjustments</h4>
+                        <dl>
+                            <dt>+ / -</dt><dd>Expand / Shrink X/Y boundaries</dd>
+                            <dt>Ctrl + +/-</dt><dd>Adjust Nx/Ny</dd>
+                            <dt>Ctrl + Arrow Keys</dt><dd>Adjust boundaries</dd>
+                        </dl>
+                    </div>
+                </div>
             </div>
             <table>
                 <tr>
@@ -65,38 +94,128 @@
                     <td><input type="range" id="ny-slider" min="2" max="200" value="47"></td>
                 </tr>
                 <tr>
-                    <td><label for="x-min-input">x_min</label></td>
-                    <td><input type="number" id="x-min-input" value="-50"></td>
+                    <td><label for="x-min-slider">X Range</label></td>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <span id="x-min-display">-50</span>
+                            <input type="range" id="x-min-slider" min="-500" max="500" step="1" value="-50">
+                            <input type="range" id="x-max-slider" min="-500" max="500" step="1" value="50">
+                            <span id="x-max-display">50</span>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
-                    <td><label for="x-max-input">x_max</label></td>
-                    <td><input type="number" id="x-max-input" value="50"></td>
+                    <td><label for="y-min-slider">Y Range</label></td>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <span id="y-min-display">-50</span>
+                            <input type="range" id="y-min-slider" min="-500" max="500" step="1" value="-50">
+                            <input type="range" id="y-max-slider" min="-500" max="500" step="1" value="50">
+                            <span id="y-max-display">50</span>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
-                    <td><label for="y-min-input">y_min</label></td>
-                    <td><input type="number" id="y-min-input" value="-50"></td>
-                </tr>
-                <tr>
-                    <td><label for="y-max-input">y_max</label></td>
-                    <td><input type="number" id="y-max-input" value="50"></td>
-                </tr>
-                <tr><td colspan="2"><hr></td></tr>
-                <tr>
-                    <td><label for="linewidth-toggle">Dynamic Width</label></td>
-                    <td><input type="checkbox" id="linewidth-toggle" checked></td>
-                </tr>
-                <tr>
-                    <td><label for="grid-toggle">Grid</label></td>
-                    <td><input type="checkbox" id="grid-toggle" checked></td>
-                </tr>
-                <tr>
-                    <td><label for="compass-toggle">Compass</label></td>
-                    <td><input type="checkbox" id="compass-toggle" checked></td>
+                    <td><label for="depth-scale-slider">Depth Scale: <span id="depth-scale-value">1</span></label></td>
+                    <td><input type="range" id="depth-scale-slider" min="0.05" max="3" value="1" step="0.05"></td>
                 </tr>
                 <tr><td colspan="2"><hr></td></tr>
                 <tr>
-                    <td><label for="z-coloring-toggle">Z Coloring</label></td>
-                    <td><input type="checkbox" id="z-coloring-toggle" checked></td>
+                    <td><label>Dynamic Width</label></td>
+                    <td>
+                        <label class="switch">
+                            <input type="checkbox" id="linewidth-toggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Grid</label></td>
+                    <td>
+                        <label class="switch">
+                            <input type="checkbox" id="grid-toggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Compass</label></td>
+                    <td>
+                        <label class="switch">
+                            <input type="checkbox" id="compass-toggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </td>
+                </tr>
+                <tr><td colspan="2"><hr></td></tr>
+                <tr>
+                    <td><label>Z Coloring</label></td>
+                    <td>
+                        <label class="switch">
+                            <input type="checkbox" id="z-coloring-toggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Display Vertex Points</label></td>
+                    <td>
+                        <label class="switch">
+                            <input type="checkbox" id="display-points-toggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </td>
+                </tr>
+                <tr><td colspan="2"><hr></td></tr>
+                <tr>
+                    <td><label>Function Type</label></td>
+                    <td>
+                        <div class="toggle-switch">
+                            <span class="toggle-label">Real</span>
+                            <label class="switch">
+                                <input type="checkbox" id="function-type-toggle">
+                                <span class="slider round"></span>
+                            </label>
+                            <span class="toggle-label">Complex</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr><td colspan="2"><hr></td></tr>
+                <tr>
+                    <td><label>Depth Smoother</label></td>
+                    <td>
+                        <label class="switch">
+                            <input type="checkbox" id="depth-smoother-toggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="depth-smoother-slider">Smoother Factor: <span id="depth-smoother-value">0.5</span></label></td>
+                    <td><input type="range" id="depth-smoother-slider" min="0" max="1" step="0.01" value="0.5"></td>
+                </tr>
+                <tr>
+                    <td><label for="render-type-select">Render Type</label></td>
+                    <td>
+                        <select id="render-type-select">
+                            <option value="line">Line</option>
+                            <option value="triangle">Triangle</option>
+                            <option value="solid">Solid</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Multi Process</label></td>
+                    <td>
+                        <label class="switch">
+                            <input type="checkbox" id="multi-process-toggle" disabled>
+                            <span class="slider round"></span>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="multi-process-slider">Workers: <span id="multi-process-value">2</span></label></td>
+                    <td><input type="range" id="multi-process-slider" min="2" max="100" value="2" disabled></td>
                 </tr>
             </table>
         </aside>
@@ -107,9 +226,14 @@
     <script src="src/shape.js"></script>
     <script src="src/3d.js"></script>
     <script src="src/utils/canvas_utils.js"></script>
+    <script src="src/utils/dom_utils.js"></script>
     <script src="src/utils/input_utils.js"></script>
+    <script src="src/utils/parser_utils.js"></script>
     <script src="src/utils/page_utils.js"></script>
 
+    <script src="src/complex.js"></script>
+    <script src="src/function_manager.js"></script>
+    
     <script src="src/index.js"></script>
 </body>
 
